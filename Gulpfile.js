@@ -6,7 +6,7 @@ var baseDir = join("lib", "client");
 
 var srcFiles = [
   join(baseDir, "lib", "ejs", "ejs_0.9_alpha_1_production.js"),
-  join(baseDir, "lib", "page", "page.js"),
+  join(baseDir, "lib", "page.js", "page.js"),
   join(baseDir, "lib", "localforage", "localforage.js"),
   join(baseDir, "lib", "debug", "debug.js"),
   join(baseDir, "myelements.jquery.js")
