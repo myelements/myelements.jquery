@@ -3063,7 +3063,7 @@ exports.enable(load());
 /**
  * TODO
  * HANDLE LOCALSTORAGE
- * DOUBLE-CHECK offline AND online EVENTS. I'm getting multiple online right now
+ * DOUBLE - CHECK offline AND online EVENTS.I 'm getting multiple online right now
  * ENSURE CORS ON BACKEND
  * FORCE RELOAD PAGE ON "reconnect_failed" EVENT.
  * DECLARE CLIENT VERSION on etag
@@ -3130,7 +3130,7 @@ $myelements.on("init", function Init() {
 });
 
 myelements.on("error", function() {
-  alert(arguments);
+  debug("My elements emitted an error", arguments);
 
 });
 
@@ -3318,7 +3318,7 @@ jQuery.extend(myelements, {
     } else {
       return function(el, type, fn) {
         if (el && el.nodeName || el === window) {
-          el.attachEvent('on' + type, function() {
+          el.attachEvent("on" + type, function() {
             return fn.call(el, window.event);
           });
         } else if (el && el.length) {
@@ -3394,8 +3394,7 @@ jQuery.extend(myelements, {
     // element and we forward the event via jQuery events on $(this).
     if (data.reactOnMessage) {
       myelements.on("message", function(message) {
-        myelements.debug("myelements message '" +
-          data.reactOnMessage + "' caught by data-react-on-event");
+        myelements.debug("myelements message '%s' caught by data-react-on-event", data.reactOnMessage);
         // Forward the event to this element with jQuery
         $el.trigger(data.reactOnMessage);
       });
@@ -3470,14 +3469,14 @@ jQuery.extend(myelements, {
 
   parseQueryParam: function(sParam) {
     var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
+    var sURLVariables = sPageURL.split("&");
     for (var i = 0; i < sURLVariables.length; i++) {
-      var sParameterName = sURLVariables[i].split('=');
+      var sParameterName = sURLVariables[i].split("=");
       if (sParameterName[0] == sParam) {
         return sParameterName[1];
       }
     }
-  }​,
+  },
 
   recoverPath: function() {
     var recoverRoute = myelements.parseQueryParam("route");
