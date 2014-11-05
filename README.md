@@ -1,6 +1,6 @@
 # myElements.jquery
 
-* Rich Web Applications like a sir... *
+*Rich Web Applications like a sir...*
 
 A jQuery interface for making any HTML element fully aware of **offline state**, 
 **backend messages**, **backend data updates** and **URL route updates**.
@@ -19,6 +19,15 @@ ModelView->Backend Pattern because it acts on an HTML element that is fully
 aware of the backend events and can send events to the backend in order to 
 alter data, communicate in realtime or every other use you have already seen
  socket.io allows you.
+
+###Rationale
+
+This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by @guille.
+*There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
+
+After that watching that talk I thought why this expected behaviour from a Single Page Applications couldn't be reduced to a single
+HTML element instead of a whole app (with **single** I mean any element).
+
 
 ##Features
 
@@ -60,9 +69,9 @@ $(function() {
 
 ### HTML Attributes for the elements
 
-`data-react-on-message.`
-`data-react-on-dataupdate `.
-`data-react-on-page`.
+* `data-react-on-message.`
+* `data-react-on-dataupdate `. Allows an element to receive jQuery events for a dataupdate message
+* `data-react-on-page`.
 
 ### Events
 Every `.myelement` element triggers the following events:
@@ -100,3 +109,14 @@ $("#my-element").on("disconnect", function() {
 ##Compatibility
 
 **myelements.jquery** only works with browsers that support the history.pushState API.
+
+
+##API
+
+### Client API
+
+### Server-side nodejs module API
+
+##License
+
+MIT
