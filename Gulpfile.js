@@ -9,6 +9,7 @@ var srcFiles = [
   join(baseDir, "lib", "page.js", "page.js"),
   join(baseDir, "lib", "localforage", "localforage.js"),
   join(baseDir, "lib", "debug", "debug.js"),
+  join(baseDir, "lib", "jquery.ui.widget", "jquery.ui.widget.js"),
   join(baseDir, "myelements.jquery.js")
 ];
 
