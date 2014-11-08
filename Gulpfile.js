@@ -5,6 +5,7 @@ var join = require("path").join;
 var baseDir = join("lib", "client");
 
 var srcFiles = [
+  require.resolve('socket.io-client/socket.io.js'),
   join(baseDir, "lib", "ejs", "ejs_0.9_alpha_1_production.js"),
   join(baseDir, "lib", "page.js", "page.js"),
   join(baseDir, "lib", "localforage", "localforage.js"),
