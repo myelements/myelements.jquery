@@ -18,7 +18,7 @@ aware of backend events like messages, data updates, etc.
 ModelView->Backend Pattern because it acts on an HTML element that is fully 
 aware of the backend events and can send events to the backend in order to 
 alter data, communicate in realtime or every other use you have already seen
- socket.io allows you.
+socket.io allows you.
 
 ###Rationale
 
@@ -115,7 +115,30 @@ $("#my-element").on("disconnect", function() {
 
 ### Client API
 
+#### Events
+
+* `disconnect`
+* `connect`
+* `offline`
+* `online`
+* `reconnect`
+* `reconnecting`
+* `reconnect_error`
+* `reconnect_failed`
+* `page`
+* `userinput`
+* `userinput_failed`
+* `userinput_success`
+* `message`
+* `dataupdate`
+* `init`
+
+
 ### Server-side nodejs module API
+
+#### Events
+
+
 
 ##License
 
