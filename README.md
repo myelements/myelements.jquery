@@ -2,8 +2,52 @@
 
 *Rich Web Applications like a sir...*
 
-A jQuery interface for making any HTML element fully aware of **offline state**, 
-**backend messages**, **backend data updates** and **URL route updates**.
+A jQuery interface that allows any HTML element to behave **optimistically** and aware of **offline state**, **backend messages**, **backend data updates** and **URL route updates**.
+
+Useful if you love doing things the jQuery way, you like socket.io and express
+
+##Installation
+
+```sh
+$ npm install myelements/myelements.jquery
+```
+
+###In the browser 
+```html
+<script src = "/myelements.jquery.js"></script>
+```
+
+###In the backend
+
+```js
+var server = require("http").createServer();
+var app = require("express")();
+var myelements = require("myelements.jquery");
+
+myelements(app, server);
+
+app.on("myelements client connected", function(client) {
+  client.trigger("dataupdate", {
+     lastItems: []
+  });
+});
+```
+
+### Example
+
+```html
+<ul class="myelement" data-react-on-dataupdate="lastTweets">
+  [% jQuery(data.lastTweets).each(function(i, tweet) { %]
+    <li> @[%=tweet.user.screen_name%]: [%= tweet.text%] </li>
+  [%})%]
+</ul> <!--ul.myelement-->    
+$("#el").myelement({
+    reactOnDataupdate: "lastTweets",
+
+});
+```
+
+
 
 ### Overview
 
