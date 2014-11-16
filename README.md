@@ -49,20 +49,13 @@ myelements(app, server);
 ###Rationale
 
 
-**myelements.jquery** relays on [socket.io](http://socket.io/) in order to be 
+**myelements.jquery** relies on [socket.io](http://socket.io/) in order to be 
 aware of backend events like messages, data updates, etc.
-
-**myelements.jquery** can be used as a lighter replacement for the 
-ModelView->Backend Pattern because it acts on an HTML element that is fully 
-aware of the backend events and can send events to the backend in order to 
-alter data, communicate in realtime or every other use you have already seen
-socket.io allows you.
 
 This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by @guille.
 *There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
 
-After that watching that talk I thought why this expected behaviour from a Single Page Applications couldn't be reduced to a single
-HTML element instead of a whole app (with **single** I mean any element).
+After watching that talk I thought about this expected behaviour from a Single Page Applications applied to a single HTML element instead of a whole app.
 
 
 ##Features
