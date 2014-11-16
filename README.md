@@ -1,10 +1,8 @@
 # myElements.jquery
 
-*Rich Web Applications like a sir...*
-
 A jQuery interface that allows any HTML element to behave **optimistically** and aware of **offline state**, **backend messages**, **backend data updates** and **URL route updates**.
 
-Useful if you love doing things the jQuery way, you like socket.io and express
+Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [socket.io](http://socket.io/) and [express](http://expressjs.com/) apps.
 
 * [Installation](#installation)
 * [Usage](#usage)
@@ -30,6 +28,7 @@ $ npm install myelements/myelements.jquery
 When you attach myelements to your express app, it sets the route `/myelements.jquery.js` with the required client (browser) source. And you can add it to your HTML like this.
 
 ```html
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src = "/myelements.jquery.js"></script>
 ```
 
