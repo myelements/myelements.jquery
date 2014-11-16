@@ -13,19 +13,19 @@ Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [
 
 **myelements.jquery** allows you to bind an element to backend events and 
 consume them like you consume any jQuery events, 
-like for example `.on("click", callback);`.
+like for example `$("#el").on("disconnect", callback);`.
 
 ##Installation
 
-*myelements* works in any HTML5 compatible browser with an nodejs express() app as a backend. 
+**myelements** works in any HTML5 compatible browser with an nodejs express() app as a backend. 
 
-```sh
+```shell
 $ npm install myelements/myelements.jquery
 ```
 
 ###In the browser 
 
-When you attach myelements to your express app, it sets the route `/myelements.jquery.js` with the required client (browser) source. And you can add it to your HTML like this.
+When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` with the required client (browser) source. And you can add it to your HTML like this.
 
 ```html
 <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
