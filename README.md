@@ -1,76 +1,61 @@
 # myElements.jquery
 
-*Rich Web Applications like a sir...*
-
 A jQuery interface that allows any HTML element to behave **optimistically** and aware of **offline state**, **backend messages**, **backend data updates** and **URL route updates**.
 
-Useful if you love doing things the jQuery way, you like socket.io and express
+Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [socket.io](http://socket.io/) and [express](http://expressjs.com/) apps.
+
+* [Installation](#installation)
+* [Usage](#usage)
+* **API**
+ * [Events](#events)
+
+## Overview
+
+**myelements.jquery** allows you to bind an element to backend events and 
+consume them like you consume any jQuery events, 
+like for example `$("#el").on("disconnect", callback);`.
 
 ##Installation
 
-```sh
+**myelements** works in any HTML5 compatible browser with an nodejs express() app as a backend. 
+
+```shell
 $ npm install myelements/myelements.jquery
 ```
 
 ###In the browser 
+
+When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` with the required client (browser) source. And you can add it to your HTML like this.
+
 ```html
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src = "/myelements.jquery.js"></script>
 ```
 
 ###In the backend
 
 ```js
-var server = require("http").createServer();
+// Standar express app usage without its own created http.Server
 var app = require("express")();
+var server = require("http").createServer(app);
 var myelements = require("myelements.jquery");
 
 myelements(app, server);
 
-app.on("myelements client connected", function(client) {
-  client.trigger("dataupdate", {
-     lastItems: []
-  });
-});
-```
-
-### Example
-
-```html
-<ul class="myelement" data-react-on-dataupdate="lastTweets">
-  [% jQuery(data.lastTweets).each(function(i, tweet) { %]
-    <li> @[%=tweet.user.screen_name%]: [%= tweet.text%] </li>
-  [%})%]
-</ul> <!--ul.myelement-->    
-$("#el").myelement({
-    reactOnDataupdate: "lastTweets",
-
-});
 ```
 
 
-
-### Overview
-
-**myelements.jquery** allows you to bind an element to backend events and 
-consume them like you consume any jQuery events, 
-like for example `.on("click", callback);`.
-
-**myelements.jquery** relays on [socket.io](http://socket.io/) in order to be 
-aware of backend events like messages, data updates, etc.
-
-**myelements.jquery** can be used as a lighter replacement for the 
-ModelView->Backend Pattern because it acts on an HTML element that is fully 
-aware of the backend events and can send events to the backend in order to 
-alter data, communicate in realtime or every other use you have already seen
-socket.io allows you.
 
 ###Rationale
+
+
+**myelements.jquery** relies on [socket.io](http://socket.io/) in order to be 
+aware of backend events like messages, data updates, etc.
 
 This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by @guille.
 *There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
 
-After that watching that talk I thought why this expected behaviour from a Single Page Applications couldn't be reduced to a single
-HTML element instead of a whole app (with **single** I mean any element).
+After watching that talk I thought about this expected behaviour from a Single Page Applications applied to a single HTML element instead of a whole app.
 
 
 ##Features
@@ -88,11 +73,43 @@ So you can use expressions that will be automaticatillay binded to the events pa
 
 ## Usage
 
+### Example
+
+#### In Node
+
+```js
+// myelements emits this event every time a myelements client connects
+myelements(app, httpServer); 
+app.on("myelements client connected", function onClientConnected(client) {
+  client.trigger("dataupdate", {
+     lastItems: []
+  });
+  client.on("userinput", function onUserInput(client) {
+    // Your code data saves data, updates data, bla
+  });
+});
+```
+
+#### In the HTML
+
 **myelements.jquery** is not fully automatic. You'll need to setup
  and designate a containing element on your page that will receive events.
 
-Every element that you want to be myelement must use the class myelement.
+```html
+<ul>
+  [% jQuery(data.lastTweets).each(function(i, tweet) { %]
+    <li> @[%=tweet.user.screen_name%]: [%= tweet.text%] </li>
+  [%})%]
+</ul> <!--ul.myelement-->    
+$("ul").myelement({
+    reactOnDataupdate: "lastTweets",
+});
+```
+###Usage via markup
 
+Every element that you want to be myelement must use `class=myelement` .
+
+The HTML .
 ```js
 <div id="my-element" class="myelement">
   <!-- Element content can be regular HTML or EJS template that uses [% and %] as delimiters -->
@@ -117,7 +134,10 @@ $(function() {
 * `data-react-on-dataupdate `. Allows an element to receive jQuery events for a dataupdate message
 * `data-react-on-page`.
 
+## API
+
 ### Events
+
 Every `.myelement` element triggers the following events:
 
 You listen to them like
@@ -130,52 +150,91 @@ $("#my-element").on("disconnect", function() {
 
 ####Internet connectivity related events
 
-* `offline`. Fired upon inability from the agent (browser or web view in phonegap) from detecting Internet conectivity.
-* `online`. Fired upon an intent to connect to the Internet.
+#####offline
+
+Fired upon inability from the agent (browser or web view in phonegap) from detecting Internet conectivity.
+
+#####online
+
+Fired upon an intent to connect to the Internet.
 
 #### Backend connectivity related events
 
-* `disconnect`. Fired upon a disconnection from backend.
-* `reconnect`. Fired upon a successful connection to the backend.
-* `reconnecting`. Fired upon an attempt to reconnect to the backend.
-* `reconnect_error` Fired upon a backend reconnection attempt error.
-* `reconnect_failed`. Fired when couldn’t reconnect to the backend after trying a lot of times.
-* `connect`. Fired on send socket connect events
+#####disconnect
+
+Fired upon a disconnection from backend.
+#####reconnect
+Fired upon a successful connection to the backend.
+
+#####reconnecting
+Fired upon an attempt to reconnect to the backend.
+
+#####reconnect_error
+Fired upon a backend reconnection attempt error.
+
+#####reconnect_failed
+Fired when couldn’t reconnect to the backend after trying a lot of times.
+
+#####connect
+Fired on send socket connect events
 
 #### History API, PushState related events
 
-`page`. Fired when the URL matches the value of element's data-react-on-page
+#####page
+
+Fired when the URL matches the value of element's data-react-on-page
+
+#####Data-update loop related events
+
+#####userinput
+
+Fired when the user inputs data or an event. For examples, when some form inside the element is submitted. You can trigger this event in order to tell the library about user input related activity. 
+
+######Example
+```js
+#("#myel btn.showMeOffline").on("click", function() {
+  $(this).trigger("userinput", {
+    "chatState": offline
+  });
+});
+```
+
+On the server you have
+```js
+client.on("userinput", function(data) {
+  
+});
+
+
+#####userinput_failed
+#####userinput_success
+#####dataupdate
+
+
+* `message`
+
+
+*Compatibility note:* **myelements.jquery** only works with browsers that support the history.pushState API.
 
 #### State related events
 
-`init`.
-
-##Compatibility
-
-**myelements.jquery** only works with browsers that support the history.pushState API.
-
-
-##API
+#####init
+Fired on element initialization. Useful for extending `myelements` reactions on events.
 
 ### Client API
 
+####$().myelement()
+
+**Parameters**
+
+######reactOnUserinput
+
+######reactOnDataUpdate
+
+######reactOnMessage
+
 #### Events
 
-* `disconnect`
-* `connect`
-* `offline`
-* `online`
-* `reconnect`
-* `reconnecting`
-* `reconnect_error`
-* `reconnect_failed`
-* `page`
-* `userinput`
-* `userinput_failed`
-* `userinput_success`
-* `message`
-* `dataupdate`
-* `init`
 
 
 ### Server-side nodejs module API
