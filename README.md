@@ -192,19 +192,23 @@ Fired when the user inputs data or an event. For examples, when some form inside
 
 ######Example
 ```js
-#("#myel btn.showMeOffline").on("click", function() {
-  $(this).trigger("userinput", {
-    "chatState": offline
+// Make the element react on user input and send the backend a scoped message 
+$("#myel").myelement({
+  reactOnUserinput: "chatStatusChanged"
+  // Make a button inside the element trigger a userinput message to the backend
+}).find("button").on("click", function() {
+  $("#myel").trigger("userinput", {
+    "newStatus": offline
   });
 });
 ```
 
 On the server you have
 ```js
-client.on("userinput", function(data) {
-  
+client.on("chatStatusChanged", function(data) {
+   console.log(data.newStatus);
 });
-
+```
 
 #####userinput_failed
 #####userinput_success
