@@ -181,6 +181,7 @@ $(<selector>).myelement(<options>)
 
 #### Element Events
 
+
 You listen to them like
 
 ```js
@@ -193,17 +194,17 @@ $("#el").on("disconnect", function() {
 
 ######offline
 
-Fired upon inability from the agent (browser or web view in phonegap) from detecting Internet conectivity.
+Fired upon inability from the agent (browser or web view in phonegap) for detecting Internet conectivity.
 
 ######online
 
-Fired upon an intent to connect to the Internet.
+Fired upon an intent and on acquiring ability from the agent to connect to the Internet.
 
 ##### Backend connectivity related events
 
 ######disconnect
-
 Fired upon a disconnection from backend.
+
 ######reconnect
 Fired upon a successful connection to the backend.
 
@@ -223,50 +224,57 @@ Fired on send socket connect events
 
 ######page
 
-Fired when the URL matches the value of element's data-react-on-page
+Fired when the URL matches the value of element's option `reactOnPage`.
+*Compatibility note:* **myelements.jquery** only works with browsers that support the history.pushState API.
 
-######Data-update loop related events
 
-######userinput
+
+#### Data-update loop and user input related events
+
+##### userinput
 
 Fired when the user inputs data or an event. For examples, when some form inside the element is submitted. You can trigger this event in order to tell the library about user input related activity. 
 
 #######Example
 ```js
-#("#myel btn.showMeOffline").on("click", function() {
-  $(this).trigger("userinput", {
-    "chatState": offline
+// Make the element react on user input and send the backend a scoped message 
+$("#myel").myelement({
+  reactOnUserinput: "chatStatusChanged"
+  // Make a button inside the element trigger a userinput message to the backend
+}).find("button").on("click", function() {
+  $("#myel").trigger("userinput", {
+    "newStatus": offline
   });
 });
 ```
 
 On the server you have
 ```js
-client.on("userinput", function(data) {
-  
+client.on("chatStatusChanged", function(data) {
+   console.log(data.newStatus);
 });
+```
 
+##### userinput_failed
 
-######userinput_failed
-######userinput_success
-######dataupdate
+Fired when the userinput message could not be acknowledged by the backend.
 
+##### userinput_success
 
-* `message`
+Fired when the userinput message was acknowledged by the backend.
 
+##### dataupdate
 
-*Compatibility note:* **myelements.jquery** only works with browsers that support the history.pushState API.
+#### Generic message events
+
+##### message
+
+A generic message event triggered on **every** message sent from the backend. You send this messages from the backend with the `trigger()` method.
 
 ##### State related events
 
 ######init
 Fired on element initialization. Useful for extending `myelements` reactions on events.
-
-#### Client API
-
-#####$().myelement()
-
-**Parameters**
 
 #######reactOnUserinput
 
@@ -276,14 +284,18 @@ Fired on element initialization. Useful for extending `myelements` reactions on 
 
 ##### Events
 
+####on()
 
-
-#### Server-side nodejs module API
+### Backend API
 
 ##### Events
 
+#### Methods
 
+##### trigger()
 
-###License
+##### on()
+
+### License
 
 MIT
