@@ -154,8 +154,8 @@ $(function() {
 Some of the options for myelement() can be specified on the HTML element markup by de-camelizing the option name the usual mapping expected for jQuerys .data() method);
 
 
-* `data-react-on-message.`. Equivalent to option `reactOnMessage`.
-* `data-react-on-dataupdate `. Equivalent to option `reactOnDataupdate`.
+* `data-react-on-message`. Equivalent to option `reactOnMessage`.
+* `data-react-on-dataupdate`. Equivalent to option `reactOnDataupdate`.
 * `data-react-on-page`. Equivalent to option `reactOnPage`.
 * `data-react-on-userinput`. Equivalent to option `ractOnUserinput`.
 
@@ -276,25 +276,23 @@ A generic message event triggered on **every** message sent from the backend. Yo
 ######init
 Fired on element initialization. Useful for extending `myelements` reactions on events.
 
-#######reactOnUserinput
 
-#######reactOnDataUpdate
+##### trigger(messageType, messageData)
 
-#######reactOnMessage
 
-##### Events
-
-####on()
+####on(event, callback)
 
 ### Backend API
 
-##### Events
+##### Backend Events
 
-#### Methods
+####Backend Methods
 
-##### trigger()
+##### trigger(messageType, messageData)
 
-##### on()
+##### on(event, callback)
+
+##### _broadcast(messageType, messageData)
 
 ### License
 
