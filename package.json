@@ -1,6 +1,6 @@
 {
   "name": "myelements.jquery",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A jQuery interface for making any HTML element fully aware of offline state, backend messages, backend data updates and URL route updates.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
