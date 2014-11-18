@@ -7,8 +7,12 @@ Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [
 * [Installation](#installation)
 * [Usage](#usage)
 * **API**
- * [Events](#events)
-
+ * Client API
+  * [Element Events](#element-events)
+ * Backend API
+  * [Backend Events](#backend-events) 
+   
+  
 ## Overview
 
 **myelements.jquery** allows you to bind an element to backend events and 
@@ -41,10 +45,7 @@ var server = require("http").createServer(app);
 var myelements = require("myelements.jquery");
 
 myelements(app, server);
-
 ```
-
-
 
 ###Rationale
 
@@ -73,114 +74,155 @@ So you can use expressions that will be automaticatillay binded to the events pa
 
 ## Usage
 
-### Example
-
-#### In Node
-
-```js
-// myelements emits this event every time a myelements client connects
-myelements(app, httpServer); 
-app.on("myelements client connected", function onClientConnected(client) {
-  client.trigger("dataupdate", {
-     lastItems: []
-  });
-  client.on("userinput", function onUserInput(client) {
-    // Your code data saves data, updates data, bla
-  });
-});
 ```
+$("#myelement").myelement(options)
+```
+
+A little more in depth...
 
 #### In the HTML
 
 **myelements.jquery** is not fully automatic. You'll need to setup
  and designate a containing element on your page that will receive events.
 
+```js
+// Make an element warn you if it can't reach the internet.
+$("#myelement").myelement().on("offline", function() {
+ alert("Can't reach the Tnternet!!!");
+});
+```
+
+Using templates for reacting automagically to backend `dataupdate` messages.
+
 ```html
-<ul>
+<ul id="mylist">
+  <!-- A regular EJS template that iterates over an array -->
   [% jQuery(data.lastTweets).each(function(i, tweet) { %]
     <li> @[%=tweet.user.screen_name%]: [%= tweet.text%] </li>
   [%})%]
 </ul> <!--ul.myelement-->    
-$("ul").myelement({
+<script>
+$("#mylist").myelement({
     reactOnDataupdate: "lastTweets",
 });
-```
-###Usage via markup
-
-Every element that you want to be myelement must use `class=myelement` .
-
-The HTML .
-```js
-<div id="my-element" class="myelement">
-  <!-- Element content can be regular HTML or EJS template that uses [% and %] as delimiters -->
-  Hello [%=data.name%]. 
-  <!-- Every template has the variable 'data' defined -->
-</div>
+// This event will only be fired when a dataupdate message for the scope `lastTweets` arrives
+// declared for the 
+$("#mylist").on("dataupdate", function() {
+ console.log("lastTweets updates");
+});
+</script>
 ```
 
-And a little jQuery code that attachs to events and messages from the backend
+#### In Node
 
 ```js
-$(function() {
-  $("$my-myelement-element").on("message", function(message) {
-    console.log(message.event, message.data);
+var app = require("express")(),
+  httpServer = require("http").createServer(app);
+// Attach my elements to an express app and an http/https server
+myelements(app, httpServer); 
+// myelements emits this event every time a myelements client connects
+app.on("myelements client connected", function onClientConnected(client) {
+  client.trigger("dataupdate", {
+     lastTweets: []
   });
 });
 ```
 
-### HTML Attributes for the elements
 
-* `data-react-on-message.`
-* `data-react-on-dataupdate `. Allows an element to receive jQuery events for a dataupdate message
-* `data-react-on-page`.
+###Usage via markup
+
+You can apply the class `myelement` and it  myelement() will be called automatically on every HTML with this class.
+
+
+```js
+<div id="el" class="myelement">
+  <!-- Element content can be regular HTML or EJS template that uses [% and %] as delimiters -->
+  Hello [%=data.name%]. 
+  <!-- Every template has the variable 'data' defined -->
+</div>
+<script>
+$(function() {
+  $("el").on("message", function(message) {
+    console.log(message.event, message.data);
+  });
+});
+</script>
+```
+
+### Data  Attributes for the elements
+
+Some of the options for myelement() can be specified on the HTML element markup by de-camelizing the option name the usual mapping expected for jQuerys .data() method);
+
+
+* `data-react-on-message.`. Equivalent to option `reactOnMessage`.
+* `data-react-on-dataupdate `. Equivalent to option `reactOnDataupdate`.
+* `data-react-on-page`. Equivalent to option `reactOnPage`.
+* `data-react-on-userinput`. Equivalent to option `ractOnUserinput`.
 
 ## API
 
-### Events
+### Client API
+
+The client part of **myelements** is jQuery-ishy and jQuery events mainly. You can expect the regular behaviour from a well know jQuery plugin.
+
+#### Initialization
+
+```
+$(<selector>).myelement(<options>)
+```
+
+##### Options
+
+* `reactOnMessage`: 
+* `reactOnDataUpdate`: 
+* `reactOnPage`: 
+* `reactOnUserinput`: 
+
+
+#### Element Events
 
 
 You listen to them like
 
 ```js
-$("#my-element").on("disconnect", function() {
+$("#el").on("disconnect", function() {
   $(this).html("We cannot reach the backend now").fadeOut().fadeIn();
 });
 ```
 
-####Internet connectivity related events
+#####Internet connectivity related events
 
-#####offline
+######offline
 
 Fired upon inability from the agent (browser or web view in phonegap) for detecting Internet conectivity.
 
-#####online
+######online
 
 Fired upon an intent and on acquiring ability from the agent to connect to the Internet.
 
-#### Backend connectivity related events
+##### Backend connectivity related events
 
-#####disconnect
+######disconnect
+Fired upon a disconnection from backend.
 
-Fired upon a disconnection from backend app.
-
-#####reconnect
+######reconnect
 Fired upon a successful connection to the backend.
 
-#####reconnecting
+######reconnecting
 Fired upon an attempt to reconnect to the backend.
 
-#####reconnect_error
+######reconnect_error
 Fired upon a backend reconnection attempt error.
 
-#####reconnect_failed
+######reconnect_failed
 Fired when couldn’t reconnect to the backend after trying a lot of times.
 
-#####connect
+######connect
 Fired on send socket connect events
 
-#### History API, PushState related events
+##### History API, PushState related events
 
-#####page
+######page
 
 Fired when the URL matches the value of element's option `reactOnPage`.
 *Compatibility note:* **myelements.jquery** only works with browsers that support the history.pushState API.
@@ -193,7 +235,7 @@ Fired when the URL matches the value of element's option `reactOnPage`.
 
 Fired when the user inputs data or an event. For examples, when some form inside the element is submitted. You can trigger this event in order to tell the library about user input related activity. 
 
-######Example
+#######Example
 ```js
 // Make the element react on user input and send the backend a scoped message 
 $("#myel").myelement({
@@ -229,26 +271,31 @@ Fired when the userinput message was acknowledged by the backend.
 
 A generic message event triggered on **every** message sent from the backend. You send this messages from the backend with the `trigger()` method.
 
+##### State related events
 
-#### State related events
-
-#####init
-
+######init
 Fired on element initialization. Useful for extending `myelements` reactions on events.
 
-###Methods
+#######reactOnUserinput
 
-####trigger()
+#######reactOnDataUpdate
+
+#######reactOnMessage
+
+##### Events
 
 ####on()
 
-
 ### Backend API
 
-#### Events
+##### Events
 
 #### Methods
 
-##License
+##### trigger()
+
+##### on()
+
+### License
 
 MIT
