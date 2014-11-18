@@ -7,8 +7,12 @@ Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [
 * [Installation](#installation)
 * [Usage](#usage)
 * **API**
- * [Events](#events)
-
+ * Client API
+  * [Element Events](#element-events)
+ * Backend API
+  * [Backend Events](#backend-events) 
+   
+  
 ## Overview
 
 **myelements.jquery** allows you to bind an element to backend events and 
