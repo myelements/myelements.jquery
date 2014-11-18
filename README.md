@@ -138,7 +138,6 @@ $(function() {
 
 ### Events
 
-Every `.myelement` element triggers the following events:
 
 You listen to them like
 
@@ -152,17 +151,18 @@ $("#my-element").on("disconnect", function() {
 
 #####offline
 
-Fired upon inability from the agent (browser or web view in phonegap) from detecting Internet conectivity.
+Fired upon inability from the agent (browser or web view in phonegap) for detecting Internet conectivity.
 
 #####online
 
-Fired upon an intent to connect to the Internet.
+Fired upon an intent and on acquiring ability from the agent to connect to the Internet.
 
 #### Backend connectivity related events
 
 #####disconnect
 
-Fired upon a disconnection from backend.
+Fired upon a disconnection from backend app.
+
 #####reconnect
 Fired upon a successful connection to the backend.
 
@@ -182,11 +182,14 @@ Fired on send socket connect events
 
 #####page
 
-Fired when the URL matches the value of element's data-react-on-page
+Fired when the URL matches the value of element's option `reactOnPage`.
+*Compatibility note:* **myelements.jquery** only works with browsers that support the history.pushState API.
 
-#####Data-update loop related events
 
-#####userinput
+
+#### Data-update loop and user input related events
+
+##### userinput
 
 Fired when the user inputs data or an event. For examples, when some form inside the element is submitted. You can trigger this event in order to tell the library about user input related activity. 
 
@@ -210,42 +213,41 @@ client.on("chatStatusChanged", function(data) {
 });
 ```
 
-#####userinput_failed
-#####userinput_success
-#####dataupdate
+##### userinput_failed
 
+Fired when the userinput message could not be acknowledged by the backend.
 
-* `message`
+##### userinput_success
 
+Fired when the userinput message was acknowledged by the backend.
 
-*Compatibility note:* **myelements.jquery** only works with browsers that support the history.pushState API.
+##### dataupdate
+
+#### Generic message events
+
+##### message
+
+A generic message event triggered on **every** message sent from the backend. You send this messages from the backend with the `trigger()` method.
+
 
 #### State related events
 
 #####init
+
 Fired on element initialization. Useful for extending `myelements` reactions on events.
 
-### Client API
+###Methods
 
-####$().myelement()
+####trigger()
 
-**Parameters**
+####on()
 
-######reactOnUserinput
 
-######reactOnDataUpdate
-
-######reactOnMessage
+### Backend API
 
 #### Events
 
-
-
-### Server-side nodejs module API
-
-#### Events
-
-
+#### Methods
 
 ##License
 
