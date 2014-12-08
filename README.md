@@ -27,6 +27,8 @@ like for example `$("#el").on("disconnect", callback);`.
 $ npm install myelements/myelements.jquery
 ```
 
+## Loading
+
 ###In the browser 
 
 When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` with the required client (browser) source. And you can add it to your HTML like this.
