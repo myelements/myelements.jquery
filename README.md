@@ -7,9 +7,9 @@ Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [
 * [Installation](#installation)
 * [Usage](#usage)
 * **API**
- * Client API
+ * [Client API](#client-api)
   * [Element Events](#element-events)
- * Backend API
+ * [Backend API](#backend-api)
   * [Backend Events](#backend-events) 
    
   
@@ -29,11 +29,6 @@ $ npm install myelements.jquery
 
 ## Loading
 
-###In the browser 
-
-When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` 
-with the required client (browser) source. And you can add it to your HTML like this.
-
 ###In the backend
 
 An `index.js` for example:
@@ -51,6 +46,11 @@ app.use(express.static(__dirname));
 
 server.listen(3000);
 ```
+
+###In the browser 
+
+When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` 
+with the required client (browser) source. And you can add it to your HTML like this.
 
 The `index.html`
 
@@ -84,19 +84,6 @@ The `index.html`
 ```
 
 
-
-###Rationale
-
-
-**myelements.jquery** relies on [socket.io](http://socket.io/) in order to be 
-aware of backend events like messages, data updates, etc.
-
-This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by [rauchg](https://github.com/rauchg).
-*There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
-
-After watching that talk I thought about this expected behaviour from a Single Page Applications applied to a single HTML element instead of a whole app.
-
-[More rationale](#more-rationale)
 
 ##Features
 
@@ -202,11 +189,33 @@ Some of the options for myelement() can be specified on the HTML element markup 
 
 ## API
 
+* [Client API](#client-api)
+* [Backend API](#backend-api)
+
 ### Client API
 
 The client part of **myelements** is jQuery-ishy and jQuery events mainly. You can expect the regular behaviour from a well know jQuery plugin.
 
-#### Initialization
+Appart form interacting with elements and the backend via a jquery-like API, you may want
+to alter some of the default parameters used by **socket.io** with **pre-initialization options**.
+
+#### Pre-initialization options
+
+    // Do this before the <script></script> that load myelements.jquery.js
+    window.myElementsOptions = {...}
+
+**The defaults are:**
+
+    {
+      // Host or host:port for the backend 
+      socketHost: undefined,
+      // socket.io namespace used by myelements
+      socketNamespace: "/myelements",
+      // socket.io HTTP URL used by meyelements socket.io Manager instance
+      socketPath: "/socket.io",
+    }
+
+#### Initializing an element
 
 ```
 $(<selector>).myelement(<options>)
@@ -233,50 +242,32 @@ $("#el").on("disconnect", function() {
 
 #####Internet connectivity related events
 
-######offline
-
-Fired upon inability from the agent (browser or web view in phonegap) for detecting Internet conectivity.
-
-######online
-
-Fired upon an intent and on acquiring ability from the agent to connect to the Internet.
+* **offline**: Fired upon inability from the agent (browser or web view in phonegap) for detecting Internet conectivity.
+* **online**: Fired upon an intent and on acquiring ability from the agent to connect to the Internet.
 
 ##### Backend connectivity related events
 
-######disconnect
-Fired upon a disconnection from backend.
+*These events are the events fired by the socket.io client used by* **myelements.jquery**.
 
-######reconnect
-Fired upon a successful connection to the backend.
-
-######reconnecting
-Fired upon an attempt to reconnect to the backend.
-
-######reconnect_error
-Fired upon a backend reconnection attempt error.
-
-######reconnect_failed
-Fired when couldn’t reconnect to the backend after trying a lot of times.
-
-######connect
-Fired on send socket connect events
+* **disconnect**: Fired upon a disconnection from backend.
+* **reconnect**:Fired upon a successful connection to the backend.
+* **reconnecting**:Fired upon an attempt to reconnect to the backend.
+* **reconnect_error**:Fired upon a backend reconnection attempt error.
+* **reconnect_failed**:Fired when couldn’t reconnect to the backend after trying a lot of times.
+* **connect**:Fired on send socket connect events
 
 ##### History API, PushState related events
 
-######page
-
-Fired when the URL matches the value of element's option `reactOnPage`.
+* **page**: Fired when the URL matches the value of element's option `reactOnPage`.
 *Compatibility note:* **myelements.jquery** only works with browsers that support the history.pushState API.
 
 
 
 #### Data-update loop and user input related events
 
-##### userinput
+**userinput**: Fired when the user inputs data or an event. For examples, when some form inside the element is submitted. You can trigger this event in order to tell the library about user input related activity. 
 
-Fired when the user inputs data or an event. For examples, when some form inside the element is submitted. You can trigger this event in order to tell the library about user input related activity. 
-
-#######Example
+##### userinput event Example
 ```js
 // Make the element react on user input and send the backend a scoped message 
 $("#myel").myelement({
@@ -325,6 +316,25 @@ Fired on element initialization. Useful for extending `myelements` reactions on 
 
 ### Backend API
 
+####Initialization
+
+    myelements(app, server, options)
+
+**Default options**
+
+    
+
+    {
+      // socket instance
+      sockets: null,
+      // Default socket.io namespaced used by myelements
+      socketNamespace: "/myelements",
+      socketPath: "/socket.io",
+      // Use no session middleware by default.
+      session: undefined
+    }
+
+
 ##### Backend Events
 
 ####Backend Methods
@@ -335,12 +345,17 @@ Fired on element initialization. Useful for extending `myelements` reactions on 
 
 ##### _broadcast(messageType, messageData)
 
-##More Rationale
 
-As said before, this library was inspired by this video:
+###Rationale
 
-The 7 Principles of rich web applications - Guillermo Rauch
-   https://www.youtube.com/watch?v=p2F-128e3sI
+
+**myelements.jquery** relies on [socket.io](http://socket.io/) in order to be 
+aware of backend events like messages, data updates, etc.
+
+This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by [rauchg](https://github.com/rauchg).
+*There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
+
+After watching that talk I thought about this expected behaviour from a Single Page Applications applied to a single HTML element instead of a whole app.
 
 The principles stated there are:
 
@@ -367,7 +382,7 @@ Consequences from avoiding the principles.
  - 0.1 second is the threshold in which the user no longer feels is
    interacting with the data.
 
-Also inspired by this other video https://www.youtube.com/watch?v=wsov4lUE2yM
+Also inspired by this other video [The Future of Real-Time with Guillermo Rauch](https://www.youtube.com/watch?v=_8CykecwKhw)
 
 The frontend needs to be able to handle a variety of scenarios:
  - Session expiration
