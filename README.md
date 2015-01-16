@@ -55,11 +55,12 @@ myelements(app, server);
 **myelements.jquery** relies on [socket.io](http://socket.io/) in order to be 
 aware of backend events like messages, data updates, etc.
 
-This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by @guille.
+This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by [rauchg](https://github.com/rauchg).
 *There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
 
 After watching that talk I thought about this expected behaviour from a Single Page Applications applied to a single HTML element instead of a whole app.
 
+[More rationale](#more-rationale)
 
 ##Features
 
@@ -90,7 +91,7 @@ A little more in depth...
 ```js
 // Make an element warn you if it can't reach the internet.
 $("#myelement").myelement().on("offline", function() {
- alert("Can't reach the Tnternet!!!");
+ alert("Can't reach the Internet!!!");
 });
 ```
 
@@ -295,6 +296,47 @@ Fired on element initialization. Useful for extending `myelements` reactions on 
 ##### on(event, callback)
 
 ##### _broadcast(messageType, messageData)
+
+##More Rationale
+
+As said before, this library was inspired by this video:
+
+The 7 Principles of rich web applications - Guillermo Rauch
+   https://www.youtube.com/watch?v=p2F-128e3sI
+
+The principles stated there are:
+
+1. **Allow to get content in a single hop.**
+2. **React inmediatelly to user input**. Mask latency. Layout adaptation
+3. **Making of all our UIs** or the application **eventually consistent**.
+   Immediate file representation. (e.g. on Cloudup uploads).
+4. **Fine grain control of how we send data back and forth from the app to
+   the server**. Automatic retrying when the servers goes down. Detecting
+   session invalidation. Handle 403s gracefully.
+5. **Enhancing history support**. Fast-back->We can cache the representatoin
+   of the latest page so wen we go back, we render it inmediately.
+   Scrollback memory. Remembering scrolling position.
+6. **Code updates**. (e.g. using the page visibility API to refresh the page on user's behalf).
+   Tell the server wich code state (frontend version) is sending data.
+7. **The idea of predictive behaviours**. Try to guess what the user is gonna do.
+   Mouse direction, preload on hover or on mousedown (old gmail's way).
+
+Consequences from avoiding the principles.
+ - We disabled scraping.
+ - We broke the back button.
+ - 14kb takes xxx milliseconds.
+ - 1seconds is the end of realtime perception.
+ - 0.1 second is the threshold in which the user no longer feels is
+   interacting with the data.
+
+Also inspired by this other video https://www.youtube.com/watch?v=wsov4lUE2yM
+
+The frontend needs to be able to handle a variety of scenarios:
+ - Session expiration
+ - User login change
+ - Very large data deltas (eg: newsfeeds)
+ (Don't make your frontend always relay on a complete event log of changes).
+
 
 ### License
 
