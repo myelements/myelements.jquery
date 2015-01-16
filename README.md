@@ -31,23 +31,59 @@ $ npm install myelements.jquery
 
 ###In the browser 
 
-When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` with the required client (browser) source. And you can add it to your HTML like this.
-
-```html
-<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src = "/myelements.jquery.js"></script>
-```
+When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` 
+with the required client (browser) source. And you can add it to your HTML like this.
 
 ###In the backend
 
+An `index.js` for example:
+
 ```js
-// Standar express app usage without its own created http.Server
-var app = require("express")();
-var server = require("http").createServer(app);
-var myelements = require("myelements.jquery");
+// Standard express app usage 
+// attached to a user-created http.Server
+var express = require("express"),
+  app = express(),
+  server = require("http").createServer(app),
+  myelements = require("myelements.jquery");
 
 myelements(app, server);
+app.use(express.static(__dirname));
+
+server.listen(3000);
 ```
+
+The `index.html`
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+</head>
+<body>
+  <!-- We will improve this element calling myelements() -->
+  <div id="myelement">
+    This <code>div</code> responds to offline/online events.
+  </div>
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src = "/myelements.jquery.js"></script>
+  <script>
+    // Make the element reactive to new events
+    $("#myelement").myelement()
+      // React to offline event
+      .on("offline", function() {
+     $(this).html("Can't reach the Internet!!!");
+      // React to offline event
+    }).on("online", function() {
+      $(this).html("We're back online");
+    });
+  </script>
+</body>
+</html>
+```
+
+
 
 ###Rationale
 
@@ -76,6 +112,8 @@ to a self emitted `page` event that triggers when the URL matches anything you w
 So you can use expressions that will be automaticatillay binded to the events payload data.
 
 ## Usage
+
+With this you make the element reactive to new events probided by the **myelements** library.
 
 ```
 $("#myelement").myelement(options)
