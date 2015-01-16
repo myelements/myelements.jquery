@@ -24,7 +24,7 @@ like for example `$("#el").on("disconnect", callback);`.
 **myelements** works in any HTML5 compatible browser with an nodejs express() app as a backend. 
 
 ```shell
-$ npm install myelements/myelements.jquery
+$ npm install myelements.jquery
 ```
 
 ## Loading
