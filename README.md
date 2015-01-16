@@ -202,7 +202,7 @@ to alter some of the default parameters used by **socket.io** with **pre-initial
 #### Pre-initialization options
 
     // Do this before the <script></script> that load myelements.jquery.js
-    window.myElementsOptions = {...}
+    window.myelementsOptions = {...}
 
 **The defaults are:**
 
@@ -335,7 +335,7 @@ Fired on element initialization. Useful for extending `myelements` reactions on 
     }
 
 
-##### Backend Events
+#### Backend Events
 
 ####Backend Methods
 
