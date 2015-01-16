@@ -62,15 +62,15 @@ The `index.html`
   <title>JS Bin</title>
 </head>
 <body>
-  <!-- We will improve this element calling myelements() -->
-  <div id="myelement">
+  <!-- We will improve this element calling $("#el").myelement() -->
+  <div id="el">
     This <code>div</code> responds to offline/online events.
   </div>
   <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src = "/myelements.jquery.js"></script>
   <script>
     // Make the element reactive to new events
-    $("#myelement").myelement()
+    $("#el").myelement()
       // React to offline event
       .on("offline", function() {
      $(this).html("Can't reach the Internet!!!");
