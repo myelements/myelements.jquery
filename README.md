@@ -11,6 +11,8 @@ Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [
   * [Element Events](#element-events)
  * [Backend API](#backend-api)
   * [Backend Events](#backend-events) 
+* [Rationale](#rationale) 
+   
    
   
 ## Overview
@@ -41,7 +43,10 @@ var express = require("express"),
   server = require("http").createServer(app),
   myelements = require("myelements.jquery");
 
+// myelements attaching.
+
 myelements(app, server);
+// A simple express way to load a static index.html
 app.use(express.static(__dirname));
 
 server.listen(3000);
@@ -86,6 +91,10 @@ The `index.html`
 
 
 ##Features
+
+**Backend events as jQuery events**: You can `trigger()` an event in the backend
+and it will be forwarded to every element that has been applied `$().myelement()` so you can
+listen to the event like `$("#el").on("customEvent");
 
 **History API PushState reactiveness**: You can make any HTML Element react 
 to a self emitted `page` event that triggers when the URL matches anything you want.
@@ -355,7 +364,7 @@ aware of backend events like messages, data updates, etc.
 This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by [rauchg](https://github.com/rauchg).
 *There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
 
-After watching that talk I thought about this expected behaviour from a Single Page Applications applied to a single HTML element instead of a whole app.
+After watching that talk I thought about this expected behaviour from a Single Page Application applied to a single HTML element instead of a whole app.
 
 The principles stated there are:
 
@@ -374,21 +383,28 @@ The principles stated there are:
 7. **The idea of predictive behaviours**. Try to guess what the user is gonna do.
    Mouse direction, preload on hover or on mousedown (old gmail's way).
 
-Consequences from avoiding the principles.
- - We disabled scraping.
- - We broke the back button.
- - 14kb takes xxx milliseconds.
- - 1seconds is the end of realtime perception.
- - 0.1 second is the threshold in which the user no longer feels is
+**Consequences from attaching to the principles.**
+
+The frontend needs to be able to handle a variety of scenarios:
+* Session expiration
+* User login change
+* Very large data deltas (eg: newsfeeds) (Don't make your frontend always relay on a complete event log of changes).
+
+
+**Consequences from avoiding the principles.**
+
+* We disabled scraping.
+* We broke the back button.
+
+ ** About the real time concept.**
+
+* 14kb takes xxx milliseconds.
+* 1seconds is the end of realtime perception.
+* 0.1 second is the threshold in which the user no longer feels is
    interacting with the data.
 
 Also inspired by this other video [The Future of Real-Time with Guillermo Rauch](https://www.youtube.com/watch?v=_8CykecwKhw)
 
-The frontend needs to be able to handle a variety of scenarios:
- - Session expiration
- - User login change
- - Very large data deltas (eg: newsfeeds)
- (Don't make your frontend always relay on a complete event log of changes).
 
 
 ### License
