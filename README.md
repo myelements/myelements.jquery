@@ -4,30 +4,42 @@ A jQuery interface that allows any HTML element to behave **optimistically** and
 
 Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [socket.io](http://socket.io/) and [express](http://expressjs.com/) apps.
 
-* [Installation](#installation)
-* [Usage](#usage)
-* **API**
- * [Client API](#client-api)
-  * [Element Events](#element-events)
- * [Backend API](#backend-api)
-  * [Backend Events](#backend-events) 
-   
-  
-## Overview
-
-**myelements.jquery** allows you to bind an element to backend events and 
+**myelements.jquery** allows you to bind an HTML element to backend events and 
 consume them like you consume any jQuery events, 
-like for example `$("#el").on("disconnect", callback);`.
+like for example:
+
+    $("#el").on("disconnect", callback);
+
+
 
 ##Installation
-
-**myelements** works in any HTML5 compatible browser with an nodejs express() app as a backend. 
 
 ```shell
 $ npm install myelements.jquery
 ```
 
-## Loading
+* [Usage](#usage)
+* **API**
+ * [Client API](#client-api)
+   * [Element Events](#element-events)
+ * [Backend API](#backend-api)
+    * [Backend Events](#backend-events) 
+    * [Backend Methods](#backend-methods) 
+* [Features](#features) 
+* [Rationale](#rationale) 
+   
+
+   
+####Requirements
+
+**myelements** works within this client/server environment: 
+
+* Any HTML5 compatible browser with jQuery loaded.
+* A **NodeJS** `express()`  app as a backend. 
+
+
+
+## Example
 
 ###In the backend
 
@@ -41,7 +53,9 @@ var express = require("express"),
   server = require("http").createServer(app),
   myelements = require("myelements.jquery");
 
+// myelements attaching.
 myelements(app, server);
+// A simple express way to load a static index.html
 app.use(express.static(__dirname));
 
 server.listen(3000);
@@ -87,6 +101,10 @@ The `index.html`
 
 ##Features
 
+**Backend events as jQuery events**: You can `trigger()` an event in the backend
+and it will be forwarded to every element that has been applied `$().myelement()` so you can
+listen to the event like `$("#el").on("customEvent");
+
 **History API PushState reactiveness**: You can make any HTML Element react 
 to a self emitted `page` event that triggers when the URL matches anything you want.
 
@@ -100,10 +118,10 @@ So you can use expressions that will be automaticatillay binded to the events pa
 
 ## Usage
 
-With this you make the element reactive to new events probided by the **myelements** library.
+With this you make the element reactive to new events provided by the **myelements** library.
 
 ```
-$("#myelement").myelement(options)
+$("#el").myelement(options)
 ```
 
 A little more in depth...
@@ -115,7 +133,7 @@ A little more in depth...
 
 ```js
 // Make an element warn you if it can't reach the internet.
-$("#myelement").myelement().on("offline", function() {
+$("#el").myelement().on("offline", function() {
  alert("Can't reach the Internet!!!");
 });
 ```
@@ -149,17 +167,44 @@ var app = require("express")(),
 // Attach my elements to an express app and an http/https server
 myelements(app, httpServer); 
 // myelements emits this event every time a myelements client connects
-app.on("myelements client connected", function onClientConnected(client) {
+app.on("myelements:connection", function onClientConnected(client) {
   client.trigger("dataupdate", {
      lastTweets: []
   });
 });
 ```
 
+### Sending messages from the backend
+
+    app.on("myelements:connection", function(client) {
+      client.trigger("lastTweets", [
+        { text: "Hi"}, { text: "Hello"}
+      ]);
+    });
+
+### Sending messages from the backend
+
+    $("#el").trigger("newMessage", "hola");
+
+### Receiving messages from the backend
+
+    $("#el").myelement().on("lastTweets", function(event, data) {
+      $.each((data).foreach
+    });
+
+
+### Receiving messages from the frontend
+
+    client.on("lastTweets", function(data) {
+      data.foreach(function(val,i) {
+        console.log("Item %s is %s", i, val);
+      });
+    });
+
 
 ###Usage via markup
 
-You can apply the class `myelement` and it  myelement() will be called automatically on every HTML with this class.
+You can apply the class `myelement` and it  the jQuery method `myelement()` will be called automatically on every HTML with this class.
 
 
 ```js
@@ -170,7 +215,7 @@ You can apply the class `myelement` and it  myelement() will be called automatic
 </div>
 <script>
 $(function() {
-  $("el").on("message", function(message) {
+  $("#el").on("message", function(message) {
     console.log(message.event, message.data);
   });
 });
@@ -337,11 +382,24 @@ Fired on element initialization. Useful for extending `myelements` reactions on 
 
 #### Backend Events
 
+My elements emits events on the express `app` object.
+
+**myelements:connection**: Fired on client connection
+
+    app.on("myelements:connection", function(client) {
+      console.log("myelements client connected");
+    });
+
 ####Backend Methods
 
-##### trigger(messageType, messageData)
+These methods apply to the `client` object you get when listening the `myelements:connection`
+event emitted by the express *app*.
 
-##### on(event, callback)
+* **client.trigger(messageType, messageData)**: Used to trigger messages on HTML elements
+in the frontend.
+
+* **client.on(event, callback)**: Used to listen for jQuery events thrown with jQuery `trigger()` method in the frontend
+by an HTML element.
 
 ##### _broadcast(messageType, messageData)
 
@@ -355,7 +413,7 @@ aware of backend events like messages, data updates, etc.
 This library is based on thoughts after watching [The 7 Principles of rich web applications](https://www.youtube.com/watch?v=p2F-128e3sI) by [rauchg](https://github.com/rauchg).
 *There's also an [essay](http://rauchg.com/2014/7-principles-of-rich-web-applications/) written about this subjects*. 
 
-After watching that talk I thought about this expected behaviour from a Single Page Applications applied to a single HTML element instead of a whole app.
+After watching that talk I thought about this expected behaviour from a Single Page Application applied to a single HTML element instead of a whole app.
 
 The principles stated there are:
 
@@ -374,21 +432,28 @@ The principles stated there are:
 7. **The idea of predictive behaviours**. Try to guess what the user is gonna do.
    Mouse direction, preload on hover or on mousedown (old gmail's way).
 
-Consequences from avoiding the principles.
- - We disabled scraping.
- - We broke the back button.
- - 14kb takes xxx milliseconds.
- - 1seconds is the end of realtime perception.
- - 0.1 second is the threshold in which the user no longer feels is
+**Consequences from attaching to the principles.**
+
+The frontend needs to be able to handle a variety of scenarios:
+* Session expiration
+* User login change
+* Very large data deltas (eg: newsfeeds) (Don't make your frontend always relay on a complete event log of changes).
+
+
+**Consequences from avoiding the principles.**
+
+* We disabled scraping.
+* We broke the back button.
+
+ ** About the real time concept.**
+
+* 14kb takes xxx milliseconds.
+* 1seconds is the end of realtime perception.
+* 0.1 second is the threshold in which the user no longer feels is
    interacting with the data.
 
 Also inspired by this other video [The Future of Real-Time with Guillermo Rauch](https://www.youtube.com/watch?v=_8CykecwKhw)
 
-The frontend needs to be able to handle a variety of scenarios:
- - Session expiration
- - User login change
- - Very large data deltas (eg: newsfeeds)
- (Don't make your frontend always relay on a complete event log of changes).
 
 
 ### License
