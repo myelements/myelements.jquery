@@ -4,32 +4,42 @@ A jQuery interface that allows any HTML element to behave **optimistically** and
 
 Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [socket.io](http://socket.io/) and [express](http://expressjs.com/) apps.
 
-* [Installation](#installation)
-* [Usage](#usage)
-* **API**
- * [Client API](#client-api)
-  * [Element Events](#element-events)
- * [Backend API](#backend-api)
-  * [Backend Events](#backend-events) 
-* [Rationale](#rationale) 
-   
-   
-  
-## Overview
-
-**myelements.jquery** allows you to bind an element to backend events and 
+**myelements.jquery** allows you to bind an HTML element to backend events and 
 consume them like you consume any jQuery events, 
-like for example `$("#el").on("disconnect", callback);`.
+like for example:
+
+    $("#el").on("disconnect", callback);
+
+
 
 ##Installation
-
-**myelements** works in any HTML5 compatible browser with an nodejs express() app as a backend. 
 
 ```shell
 $ npm install myelements.jquery
 ```
 
-## Loading
+* [Usage](#usage)
+* **API**
+ * [Client API](#client-api)
+   * [Element Events](#element-events)
+ * [Backend API](#backend-api)
+    * [Backend Events](#backend-events) 
+    * [Backend Methods](#backend-methods) 
+* [Features](#features) 
+* [Rationale](#rationale) 
+   
+
+   
+####Requirements
+
+**myelements** works within this client/server environment: 
+
+* Any HTML5 compatible browser with jQuery loaded.
+* A **NodeJS** `express()`  app as a backend. 
+
+
+
+## Example
 
 ###In the backend
 
@@ -44,7 +54,6 @@ var express = require("express"),
   myelements = require("myelements.jquery");
 
 // myelements attaching.
-
 myelements(app, server);
 // A simple express way to load a static index.html
 app.use(express.static(__dirname));
@@ -109,10 +118,10 @@ So you can use expressions that will be automaticatillay binded to the events pa
 
 ## Usage
 
-With this you make the element reactive to new events probided by the **myelements** library.
+With this you make the element reactive to new events provided by the **myelements** library.
 
 ```
-$("#myelement").myelement(options)
+$("#el").myelement(options)
 ```
 
 A little more in depth...
@@ -124,7 +133,7 @@ A little more in depth...
 
 ```js
 // Make an element warn you if it can't reach the internet.
-$("#myelement").myelement().on("offline", function() {
+$("#el").myelement().on("offline", function() {
  alert("Can't reach the Internet!!!");
 });
 ```
@@ -158,17 +167,44 @@ var app = require("express")(),
 // Attach my elements to an express app and an http/https server
 myelements(app, httpServer); 
 // myelements emits this event every time a myelements client connects
-app.on("myelements client connected", function onClientConnected(client) {
+app.on("myelements:connection", function onClientConnected(client) {
   client.trigger("dataupdate", {
      lastTweets: []
   });
 });
 ```
 
+### Sending messages from the backend
+
+    app.on("myelements:connection", function(client) {
+      client.trigger("lastTweets", [
+        { text: "Hi"}, { text: "Hello"}
+      ]);
+    });
+
+### Sending messages from the backend
+
+    $("#el").trigger("newMessage", "hola");
+
+### Receiving messages from the backend
+
+    $("#el").myelement().on("lastTweets", function(event, data) {
+      $.each((data).foreach
+    });
+
+
+### Receiving messages from the frontend
+
+    client.on("lastTweets", function(data) {
+      data.foreach(function(val,i) {
+        console.log("Item %s is %s", i, val);
+      });
+    });
+
 
 ###Usage via markup
 
-You can apply the class `myelement` and it  myelement() will be called automatically on every HTML with this class.
+You can apply the class `myelement` and it  the jQuery method `myelement()` will be called automatically on every HTML with this class.
 
 
 ```js
@@ -179,7 +215,7 @@ You can apply the class `myelement` and it  myelement() will be called automatic
 </div>
 <script>
 $(function() {
-  $("el").on("message", function(message) {
+  $("#el").on("message", function(message) {
     console.log(message.event, message.data);
   });
 });
@@ -346,11 +382,24 @@ Fired on element initialization. Useful for extending `myelements` reactions on 
 
 #### Backend Events
 
+My elements emits events on the express `app` object.
+
+**myelements:connection**: Fired on client connection
+
+    app.on("myelements:connection", function(client) {
+      console.log("myelements client connected");
+    });
+
 ####Backend Methods
 
-##### trigger(messageType, messageData)
+These methods apply to the `client` object you get when listening the `myelements:connection`
+event emitted by the express *app*.
 
-##### on(event, callback)
+* **client.trigger(messageType, messageData)**: Used to trigger messages on HTML elements
+in the frontend.
+
+* **client.on(event, callback)**: Used to listen for jQuery events thrown with jQuery `trigger()` method in the frontend
+by an HTML element.
 
 ##### _broadcast(messageType, messageData)
 
