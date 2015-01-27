@@ -2,15 +2,12 @@
 
 A jQuery interface that allows any HTML element to behave **optimistically** and aware of **offline state**, **backend messages**, **backend data updates** and **URL route updates**.
 
-Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [socket.io](http://socket.io/) and [express](http://expressjs.com/) apps.
-
 **myelements.jquery** allows you to bind an HTML element to backend events and 
-consume them like you consume any jQuery events, 
-like for example:
+consume them like you consume any jQuery events, like for example:
 
     $("#el").on("disconnect", callback);
 
-
+Useful if you love doing things the [jQuery](http://jquery.com/) way, you like [socket.io](http://socket.io/) and [express](http://expressjs.com/) apps.
 
 ##Installation
 
@@ -41,9 +38,7 @@ $ npm install myelements.jquery
 
 ## Example
 
-###In the backend
-
-An `index.js` for example:
+**In the backend**. An `index.js` for example:
 
 ```js
 // Standard express app usage 
@@ -61,12 +56,12 @@ app.use(express.static(__dirname));
 server.listen(3000);
 ```
 
-###In the browser 
+**In the browser**. The `index.html`
 
-When you attach **myelements** to your express app, it sets the route `/myelements.jquery.js` 
+When you attach **myelements** to your express app in the backend, it sets the route `/myelements/myelements.jquery.js` 
 with the required client (browser) source. And you can add it to your HTML like this.
 
-The `index.html`
+
 
 ```html
 <!DOCTYPE html>
@@ -81,7 +76,7 @@ The `index.html`
     This <code>div</code> responds to offline/online events.
   </div>
   <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script src = "/myelements.jquery.js"></script>
+  <script src = "/myelements/myelements.jquery.js"></script>
   <script>
     // Make the element reactive to new events
     $("#el").myelement()
@@ -106,72 +101,26 @@ and it will be forwarded to every element that has been applied `$().myelement()
 listen to the event like `$("#el").on("customEvent");
 
 **History API PushState reactiveness**: You can make any HTML Element react 
-to a self emitted `page` event that triggers when the URL matches anything you want.
+to `.on("page")` event that triggers when the URL matches anything you want.
 
-**Offline data synchronization**: Every element can declare to be binded
+**Templates**: The element innerHTML is taken as a EJS template. You declare
+which message will be the template scope. So, when a message arrives from the backend
+the template is re-rendered.
+
+**Offline data synchronization**: Every message received from the backend
+is stored in browser storage. can declare to be binded
  to a data object that is updated on `dataupdate` events from the server 
  but the element can also rely on a local copy of the last state of the 
  data stored in localstorage automatically by myelements.jquery on every dataupdate event.
 
-**Templates**: The element innerHTML is taken as a EJS template. 
-So you can use expressions that will be automaticatillay binded to the events payload data.
+
 
 ## Usage
 
-With this you make the element reactive to new events provided by the **myelements** library.
+Calling the `.myelement()` method (jquery) on an element makes the element reactive to new events provided by the **myelements** library.
 
 ```
 $("#el").myelement(options)
-```
-
-A little more in depth...
-
-#### In the HTML
-
-**myelements.jquery** is not fully automatic. You'll need to setup
- and designate a containing element on your page that will receive events.
-
-```js
-// Make an element warn you if it can't reach the internet.
-$("#el").myelement().on("offline", function() {
- alert("Can't reach the Internet!!!");
-});
-```
-
-Using templates for reacting automagically to backend `dataupdate` messages.
-
-```html
-<ul id="mylist">
-  <!-- A regular EJS template that iterates over an array -->
-  [% jQuery(data.lastTweets).each(function(i, tweet) { %]
-    <li> @[%=tweet.user.screen_name%]: [%= tweet.text%] </li>
-  [%})%]
-</ul> <!--ul.myelement-->    
-<script>
-$("#mylist").myelement({
-    reactOnDataupdate: "lastTweets",
-});
-// This event will only be fired when a dataupdate message for the scope `lastTweets` arrives
-// declared for the 
-$("#mylist").on("dataupdate", function() {
- console.log("lastTweets updates");
-});
-</script>
-```
-
-#### In Node
-
-```js
-var app = require("express")(),
-  httpServer = require("http").createServer(app);
-// Attach my elements to an express app and an http/https server
-myelements(app, httpServer); 
-// myelements emits this event every time a myelements client connects
-app.on("myelements:connection", function onClientConnected(client) {
-  client.trigger("dataupdate", {
-     lastTweets: []
-  });
-});
 ```
 
 ### Sending messages from the backend
@@ -231,6 +180,56 @@ Some of the options for myelement() can be specified on the HTML element markup 
 * `data-react-on-dataupdate`. Equivalent to option `reactOnDataupdate`.
 * `data-react-on-page`. Equivalent to option `reactOnPage`.
 * `data-react-on-userinput`. Equivalent to option `ractOnUserinput`.
+
+###Usage example
+
+#### In the HTML
+
+**myelements.jquery** is not fully automatic. You'll need to setup
+ and designate a containing element on your page that will receive events.
+
+```js
+// Make an element warn you if it can't reach the internet.
+$("#el").myelement().on("offline", function() {
+ alert("Can't reach the Internet!!!");
+});
+```
+
+Using templates for reacting automagically to backend `dataupdate` messages.
+
+```html
+<ul id="mylist">
+  <!-- A regular EJS template that iterates over an array -->
+  [% jQuery(data.lastTweets).each(function(i, tweet) { %]
+    <li> @[%=tweet.user.screen_name%]: [%= tweet.text%] </li>
+  [%})%]
+</ul> <!--ul.myelement-->    
+<script>
+$("#mylist").myelement({
+    reactOnDataupdate: "lastTweets",
+});
+// This event will only be fired when a dataupdate message for the scope `lastTweets` arrives
+// declared for the 
+$("#mylist").on("dataupdate", function() {
+ console.log("lastTweets updates");
+});
+</script>
+```
+
+#### In Node
+
+```js
+var app = require("express")(),
+  httpServer = require("http").createServer(app);
+// Attach my elements to an express app and an http/https server
+myelements(app, httpServer); 
+// myelements emits this event every time a myelements client connects
+app.on("myelements:connection", function onClientConnected(client) {
+  client.trigger("dataupdate", {
+     lastTweets: []
+  });
+});
+```
 
 ## API
 
@@ -401,7 +400,9 @@ in the frontend.
 * **client.on(event, callback)**: Used to listen for jQuery events thrown with jQuery `trigger()` method in the frontend
 by an HTML element.
 
-##### _broadcast(messageType, messageData)
+##### broadcast(messageType, messageData)
+
+Idem to `socket.io`'s client `.broadcast.emit()`
 
 
 ###Rationale
