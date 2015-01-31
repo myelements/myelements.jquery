@@ -27,7 +27,7 @@
     "uglify-js": "~2.4.15",
     "socket.io-client": "~1.2.0",
     "extend": "~2.0.0",
-    "express-socket.io-session": "git://github.com/oskosk/express-socket.io-session"
+    "express-socket.io-session": "~1.2.1"
   },
   "devDependencies": {
     "gulp-uglify": "~1.0.1",
