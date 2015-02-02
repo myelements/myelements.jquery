@@ -5,20 +5,20 @@ A jQuery interface that allows any HTML element to behave **optimistically** and
 **myelements.jquery** allows you to bind an HTML element to backend events and 
 consume them like you [consume any jQuery event](http://api.jquery.com/on/). Useful if you love doing things the [jQuery](http://jquery.com/) way and you like [express](http://expressjs.com/) apps empowered with [socket.io](http://socket.io/) .
 
-##Installation
+## Installation
 
 ```shell
 $ npm install myelements.jquery
 ```
    
-##Requirements
+## Requirements
 
 **myelements** works within this client/server environment: 
 
 * Any HTML5 compatible browser with jQuery loaded.
 * A **NodeJS** `express()`  app as a backend. 
 
-##Features
+## Features
 
 **Backend events as jQuery events**: You can `trigger()` an event in the backend
 and it will be forwarded to every element that has been applied `$().myelement()` so you can
@@ -149,7 +149,7 @@ $("#el").myelement(options)
 
 
 
-###Usage example
+### Usage example
 
 #### In the HTML
 
@@ -199,7 +199,7 @@ The client part of **myelements** is jQuery-ishy and jQuery events mainly. You c
  and designate a containing element on your page that will receive events.
 
 
-###$(selector).myelement(options)
+### $(selector).myelement(options)
  
  Initializes HTML elements in order to receive the jQuery events provided by **myelements**.
 
@@ -227,7 +227,7 @@ prior to loading **myelements.jquery**.
     </script>
     <script src = "/myelements/myelements.jquery.js"></script>
 
-###$(selector).send(event_name, data)
+### $(selector).send(event_name, data)
 
 Sends a message to the backend. 
 
@@ -236,7 +236,7 @@ __Arguments__
 * `name` -  A message name . The message is sent via socket.io's `send()` method. As such it need an event name.
 * `data` -  An `Object`, `Array` or `String` to send to the backend as payload data.
 
-###$(selector).on(event_name, callback)
+### $(selector).on(event_name, callback)
 
 Listen for events on the element. The `.on` method works is the jQuery method `.on()`. The thing 
 is that when **myelements** receive a socket.io's message from the backend it triggers is it 
@@ -320,7 +320,7 @@ client.on("chatStatusChanged", function(data) {
 
 * `init` -  Fired on element initialization. Useful for extending `myelements` reactions on events.
 
-###Usage via markup
+### Usage via markup
 
 You can apply the class `myelement` and it  the jQuery method `myelement()` will be called automatically on every HTML with this class.
 
@@ -336,7 +336,7 @@ Some of the options for myelement() can be specified on the HTML element markup 
 
 ## Backend API
 
-###myelements(app, server, options)
+### myelements(app, server, options)
 
 __Arguments__
 
@@ -375,7 +375,7 @@ __Arguments__
           console.log("myelements client connected");
         });
 
-###Backend Methods
+### Backend Methods
 
 _These methods apply to the `socket` object you get when listening the `connection`
 event emitted on the socket.io server instance used by **myelements**_. 
@@ -388,7 +388,7 @@ the frontend and the backend is done via socket.io's `send()` method.
 * `socket.broadcast.trigger()`. Identical to `socket.broadcast.send()`.
 * `socket.on.message()`. Convenience method for listening just for messages.
 
-####socket.trigger(event, data)
+#### socket.trigger(event, data)
 
 Used to trigger messages on HTML elements in the frontend.
 
@@ -398,11 +398,11 @@ Used to trigger messages on HTML elements in the frontend.
 * `data` - An `Array`, `String`, or `Object` to send as message data.
 
 
-####socket.on.message(event, callback)
+#### socket.on.message(event, callback)
 
 Used to listen for jQuery events thrown by an HTML element in the frontend with the jQuery `trigger()` method.
 
-####socket.broadcast.trigger(event, data)
+#### socket.broadcast.trigger(event, data)
 
 Idem to `socket.io`'s client `.broadcast.emit()` trigger an event on every frontend
 connected to the server except this socket emitting the broadcast.
@@ -410,7 +410,7 @@ connected to the server except this socket emitting the broadcast.
 * `event` - An event name.
 * `data` - An `Array`, `String`, or `Object` to send as message data.
 
-###Rationale
+### Rationale
 
 
 **myelements.jquery** relies on [socket.io](http://socket.io/) in order to be 
@@ -461,7 +461,7 @@ The frontend needs to be able to handle a variety of scenarios:
 Also inspired by this other video [The Future of Real-Time with Guillermo Rauch](https://www.youtube.com/watch?v=_8CykecwKhw)
 
 
-#License 
+## License 
 
 The MIT License (MIT)
 
